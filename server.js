@@ -1,8 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const path = require("path");
+const hbs = require('express-hbs');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const expressValidator = require('express-validator');
+
+
 
 // create express app
 const app = express();
+app.use('/static', express.static('app/public'));
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -16,22 +24,28 @@ const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 
+app.use(cookieParser());
+app.use(session({ secret: 'razi', saveUninitialized: false, resave: false }));
+
 // Connecting to the database
 mongoose.connect(dbConfig.url, {
-	useNewUrlParser: true
+    useNewUrlParser: true
 }).then(() => {
-    console.log("Successfully connected to the database");    
+    console.log("Successfully connected to the database");
 }).catch(err => {
     console.log('Could not connect to the database. Exiting now...', err);
     process.exit();
 });
 
-// define a simple route
-app.get('/', (req, res) => {
-    res.json({"message": "Welcome to EasyNotes application. Take notes quickly. Organize and keep track of all your notes."});
-});
+app.engine('hbs', hbs.express4({
+    partialsDir: __dirname + '/views/partials'
+}));
+app.set('view engine', 'hbs');
+app.set('views', __dirname + '/views');
 
-require('./app/routes/note.routes.js')(app);
+
+const fb = require('./app/routes/fb.routes');
+app.use('/', fb);
 
 // listen for requests
 app.listen(3000, () => {

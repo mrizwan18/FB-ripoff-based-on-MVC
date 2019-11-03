@@ -1,0 +1,19 @@
+.main-container{
+ background:white;
+}
+.instructions{
+ font-size:9pt;
+}
+.footer{
+ margin-top:20px;
+}
+.forgot{
+ margin-left:10px;
+}
+.credits{
+ color: tomato;
+ float:right;
+}
+
+
+

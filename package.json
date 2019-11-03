@@ -4,7 +4,8 @@
   "description": "Never miss a thing in Life. Take notes quickly. Organize and keep track of all your notes.",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "nodemon server.js"
   },
   "keywords": [
     "Express",
@@ -16,8 +17,16 @@
   "author": "callicoder",
   "license": "MIT",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.4",
     "express": "^4.16.3",
-    "mongoose": "^5.2.8"
+    "express-hbs": "^2.2.0",
+    "express-messages": "^1.0.1",
+    "express-session": "^1.17.0",
+    "express-validator": "^6.2.0",
+    "mongoose": "^5.2.8",
+    "nodemon": "^1.19.4"
   }
 }
