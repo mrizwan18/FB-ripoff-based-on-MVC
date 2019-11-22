@@ -2,12 +2,27 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = mongoose.Schema({
-    firstName: String,
-    lastName: String,
-    email: String,
-    password: String,
-    salt: String,
-    dob: { type: Date, default: new Date() },
+    firstName: {
+        type: String,
+        required: true
+    },
+    lastName: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        unique: true,
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    dob: {
+        type: Date, default: new Date(),
+        required: true
+    },
     gender: String
 
 }, {
@@ -15,10 +30,10 @@ const userSchema = mongoose.Schema({
 });
 // Events
 userSchema.pre('save', function (next) {
+    console.log("in pre");
     bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(this.password, salt, (err, hash) => {
             this.password = hash;
-            this.salt = salt;
             next();
         });
     });

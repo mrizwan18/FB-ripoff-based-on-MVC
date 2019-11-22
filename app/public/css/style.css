@@ -1,19 +1,37 @@
-.main-container{
- background:white;
-}
-.instructions{
- font-size:9pt;
-}
-.footer{
- margin-top:20px;
-}
-.forgot{
- margin-left:10px;
-}
-.credits{
- color: tomato;
- float:right;
+.main-container {
+    background: white;
 }
 
+.instructions {
+    font-size: 9pt;
+}
 
+.footer {
+    margin-top: 20px;
+}
 
+.forgot {
+    margin-left: 10px;
+}
+
+.credits {
+    color: tomato;
+    float: right;
+}
+
+.leftPane {
+    background-color: #4267B2;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 30vh;
+    text-align: center;
+}
+
+.rightPane {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 150vh;
+    text-align: center;
+}

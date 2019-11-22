@@ -1,13 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require("path");
-const hbs = require('express-hbs');
 const cookieParser = require('cookie-parser');
-const session = require('express-session');
-const expressValidator = require('express-validator');
-
-
-
 // create express app
 const app = express();
 app.use('/static', express.static('app/public'));
@@ -17,15 +11,11 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 // parse application/json
 app.use(bodyParser.json())
+app.use(cookieParser());
 
 // Configuring the database
 const dbConfig = require('./config/database.config.js');
 const mongoose = require('mongoose');
-
-mongoose.Promise = global.Promise;
-
-app.use(cookieParser());
-app.use(session({ secret: 'razi', saveUninitialized: false, resave: false }));
 
 // Connecting to the database
 mongoose.connect(dbConfig.url, {
@@ -37,15 +27,18 @@ mongoose.connect(dbConfig.url, {
     process.exit();
 });
 
-app.engine('hbs', hbs.express4({
-    partialsDir: __dirname + '/views/partials'
-}));
-app.set('view engine', 'hbs');
-app.set('views', __dirname + '/views');
+app.set('views', path.join(__dirname + '/app/views'));
+
+// define a simple route
+app.get('/', (req, res) => {
+    res.sendFile('register.html', { root: 'app/views' })
+});
+app.get('/home', (req, res) => {
+    res.sendFile('home.html', { root: 'app/views' })
+});
 
 
-const fb = require('./app/routes/fb.routes');
-app.use('/', fb);
+require('./app/routes/registration')(app);
 
 // listen for requests
 app.listen(3000, () => {

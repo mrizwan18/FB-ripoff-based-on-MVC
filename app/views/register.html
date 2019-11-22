@@ -29,13 +29,14 @@
         <ul class="navbar-nav mr-auto">
         </ul>
         <form class="form-inline my-2 my-lg-0" method="POST" action="/login">
-          <input class="form-control mr-sm-2" type="Email" placeholder="Email" aria-label="Email">
-          <input class="form-control mr-sm-2" type="password" placeholder="Password" aria-label="Password">
+          <input class="form-control mr-sm-2" type="Email" placeholder="Email" name="emailLogin">
+          <input class="form-control mr-sm-2" type="password" placeholder="Password" name="passwordLogin">
           <button class="btn btn-primary my-2 my-sm-0" type="submit">Login</button>
           <div class="forgot">
             <a href="#">Forgot Password?</a>
           </div>
         </form>
+        
       </div>
     </nav>
     <div class="row">
@@ -56,7 +57,7 @@
         <p class="lead">
           It's quick and easy.
         </p>
-        <form method="POST" action="/register">
+        <form method="POST" action="/signUp">
           <div class="form-row">
             <div class="form-group col-md-6">
               <input type="text" class="form-control" name="firstName" placeholder="First Name">
