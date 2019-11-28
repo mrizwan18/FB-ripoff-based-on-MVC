@@ -10,7 +10,12 @@ module.exports = (app) => {
     // password must be at least 7 chars long
     check('password').isLength({ min: 7 })], users.signUp);
 
-    // Retrieve a single User with userId
     app.post('/login', users.login);
-    app.post("/deleteUser",  users.user_delete);
+    app.post("/:userId/deleteUser",  users.user_delete);
+    app.get("/:userId" , users.getUser);
+    app.get("/:userId/edit", users.edit);
+    app.get("/:userId/changePass", users.pass);
+    app.post("/logout", users.logout);
+    app.post("/:userId/editDetails", users.editDetails);
+    app.post("/:userId/changePassword", users.changePass);
 }

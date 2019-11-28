@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
+const cookieParser = require('cookie-parser');
 // Create and Save a new User
 exports.signUp = (req, res) => {
     // Finds the validation errors in this request and wraps them in an object with handy functions
@@ -35,7 +36,7 @@ exports.signUp = (req, res) => {
                 user.save()
                     .then(data => {
                         res.cookie('currentUser', data);
-                        return res.redirect("http://localhost:3000/home");
+                        return res.render("home", { user: data });
                     }).catch(err => {
                         return res.status(500).send({
                             message: err.message || "Some error occurred while creating the User."
@@ -60,8 +61,8 @@ exports.login = (req, res) => {
                 if (err) res.send({ message: "Wrong credentials" });
                 else {
                     if (result) {
-                        res.cookie('currentUser', user.email);
-                        return res.sendFile("check.html", { root: 'app/views' });
+                        res.cookie('currentUser', result);
+                        return res.render("home", { user: user });
                     }
                     else
                         res.send({ result: result, message: "Auth failed" });
@@ -77,13 +78,52 @@ exports.login = (req, res) => {
         });
 };
 
+exports.edit = (req, res) => {
+    User.findOne({ _id: req.params.userId })
+        .exec()
+        .then(user => {
+            if (user.length < 1) {
+                return res.status(401).json({
+                    message: "Auth failed 1"
+                });
+            }
+            else {
+                res.render("edit", { user: user });
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: "Some DB error ocurred"
+            });
+        });
+};
+exports.pass = (req, res) => {
+    User.findOne({ _id: req.params.userId })
+        .exec()
+        .then(user => {
+            if (user.length < 1) {
+                return res.status(401).json({
+                    message: "Auth failed 1"
+                });
+            }
+            else {
+                res.render("pass", { user: user });
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: "Some DB error ocurred"
+            });
+        });
+};
+
 exports.user_delete = (req, res, next) => {
-    User.deleteOne({ email: req.cookies['currentUser'] })
+    User.deleteOne({ _id: req.params.userId })
         .exec()
         .then(result => {
-            res.status(200).json({
-                message: "User deleted"
-            });
+            res.render("register");
         })
         .catch(err => {
             console.log(err);
@@ -92,3 +132,99 @@ exports.user_delete = (req, res, next) => {
             });
         });
 };
+
+exports.getUser = (req, res, next) => {
+    User.find({ _id: req.params.userId })
+        .exec()
+        .then(user => {
+            if (user.length == 0)
+                return res.status(401).json({
+                    message: "User not found"
+                });
+
+            return res.status(200).json({
+                message: user
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+}
+
+exports.editDetails = (req, res, next) => {
+    User.findByIdAndUpdate(req.params.userId,
+        {
+            $set:
+            {
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                email: req.body.email,
+                dob: req.body.bday,
+                gender: req.body.gender,
+            }
+        },
+        { new: true })
+        .exec()
+        .then(user => {
+            if (user.length == 0)
+                return res.status(401).json({
+                    message: "User not found"
+                });
+
+            res.render("home", { user: user });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+}
+
+exports.changePass = (req, res, next) => {
+    if (req.body.newPassword === req.body.newCPassword) {
+        bcrypt.hash(req.body.newPassword, 10, (err, hash) => {
+            if (err)
+                return res.status(401).json({
+                    message: err
+                });
+            else {
+                User.findByIdAndUpdate(req.params.userId,
+                    {
+                        $set:
+                        {
+                            password: hash,
+                        }
+                    },
+                    { new: true })
+                    .exec()
+                    .then(user => {
+                        if (user.length == 0)
+                            return res.status(401).json({
+                                message: "User not found"
+                            });
+                        res.render("home", { user: user });
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        res.status(500).json({
+                            error: err
+                        });
+                    });
+            }
+        })
+    }
+    else {
+        return res.status(401).json({
+            message: "Something went wrong"
+        })
+    }
+}
+
+exports.logout = (req, res, next) => {
+    res.clearCookie('userData');
+    return res.render("register");
+}

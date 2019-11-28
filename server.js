@@ -28,19 +28,21 @@ mongoose.connect(dbConfig.url, {
 });
 
 app.set('views', path.join(__dirname + '/app/views'));
+app.set('view engine', 'ejs');
+
 
 // define a simple route
 app.get('/', (req, res) => {
-    res.sendFile('register.html', { root: 'app/views' })
+    res.render('register')
 });
 app.get('/home', (req, res) => {
-    res.sendFile('home.html', { root: 'app/views' })
+    res.render('home')
 });
 
 
 require('./app/routes/registration')(app);
 
 // listen for requests
-app.listen(3000, () => {
+app.listen(4000, () => {
     console.log("Server is listening on port 3000");
 });
