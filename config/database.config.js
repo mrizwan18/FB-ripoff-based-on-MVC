@@ -1,4 +1,4 @@
 module.exports = {
-    url:'mongodb+srv://razi:7751930710b@fb-ripoff-k0mfo.mongodb.net/test?retryWrites=true&w=majority'
+    url:'your mongodb connection string'
 }
 
